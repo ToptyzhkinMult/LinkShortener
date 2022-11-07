@@ -31,10 +31,12 @@
 @foreach (var item in Model) {
         <tr>
             <td style="word-break: break-all">
-                @Html.DisplayFor(modelItem => item.OriginalLink)
+                <!--@Html.DisplayFor(modelItem => item.OriginalLink)-->
+                <a href=@item.OriginalLink>@item.OriginalLink</a>
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ShortLink)
+                <!--@Html.DisplayFor(modelItem => item.ShortLink)-->
+                <a href=@item.ShortLink>@item.ShortLink</a>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.CreateDate)
