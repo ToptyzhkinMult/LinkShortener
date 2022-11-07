@@ -46,8 +46,7 @@ namespace LinkShortener.Controllers
         // GET: Link/Create
         public IActionResult Create()
         {
-            Link link = new Link() { ShortLink = (new ShortLinkGenerator(_context)).GenerteShortLink() };
-            return View(link);
+            return View();
         }
 
         // POST: Link/Create
@@ -57,7 +56,11 @@ namespace LinkShortener.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,OriginalLink,ShortLink,CreateDate,FolowingCount")] Link link)
         {
-            link.ShortLink = (new ShortLinkGenerator(_context)).GenerteShortLink();
+            var request = HttpContext.Request;
+            var host = request.Host.Value;
+            var sheme = request.Scheme;
+
+            link.ShortLink = (new ShortLinkGenerator(_context)).GenerteShortLink(sheme + "://" + host);
             link.CreateDate = DateTime.Now;
             if (ModelState.IsValid)
             {
@@ -155,6 +158,25 @@ namespace LinkShortener.Controllers
 
         public IActionResult ShortLinkRedirect(string shortLink)
         {
+            Link link = _context.Link.FirstOrDefault(l => l.ShortLink == shortLink);
+            link.FolowingCount += 1;
+            _context.Update(link);
+            _context.SaveChanges();
+            return Redirect(link.OriginalLink);
+        }
+
+        [Route("Go/{foo}")]
+        public IActionResult RedirectShortLink([FromRoute] string foo)
+        {
+            var request = HttpContext.Request;
+            var host = request.Host.Value;
+            var sheme = request.Scheme;
+            var path = request.Path;
+
+            string shortLink = sheme + "://" + host + path;
+            //ShortLinkRedirect(sheme + "://" + host + path);
+
+
             Link link = _context.Link.FirstOrDefault(l => l.ShortLink == shortLink);
             link.FolowingCount += 1;
             _context.Update(link);

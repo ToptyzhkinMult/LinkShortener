@@ -14,12 +14,25 @@ namespace LinkShortener.Helper
         {
             _context = context;
         }
-        public string GenerteShortLink()
+        public string GenerteShortLink(string headLink)
         {
-            string shortLinlk = "https://www.google.com/" + (new Random()).Next(1000, 9999);
-            if (_context.Link.Any(l => l.ShortLink == shortLinlk)) shortLinlk = GenerteShortLink();
+            string shortLinlk = headLink + "/" + "Go" + "/" + RandomGenerate(10);
+            if (_context.Link.Any(l => l.ShortLink == shortLinlk)) shortLinlk = GenerteShortLink(headLink);
 
             return shortLinlk;
+        }
+
+        private string RandomGenerate(int length)
+        {
+            Random random = new Random();
+            string character = "0123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM";
+            char[] letters = character.ToCharArray();
+            string s = "";
+            for (int i = 0; i < length; i++)
+            {
+                s += letters[random.Next(letters.Length)].ToString();
+            }
+            return s;
         }
     }
 }
