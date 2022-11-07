@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LinkShortener.Models;
+using LinkShortener.Helper;
 
 namespace LinkShortener.Controllers
 {
@@ -45,7 +46,8 @@ namespace LinkShortener.Controllers
         // GET: Link/Create
         public IActionResult Create()
         {
-            return View();
+            Link link = new Link() { ShortLink = (new ShortLinkGenerator(_context)).GenerteShortLink() };
+            return View(link);
         }
 
         // POST: Link/Create
@@ -55,6 +57,8 @@ namespace LinkShortener.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,OriginalLink,ShortLink,CreateDate,FolowingCount")] Link link)
         {
+            link.ShortLink = (new ShortLinkGenerator(_context)).GenerteShortLink();
+            link.CreateDate = DateTime.Now;
             if (ModelState.IsValid)
             {
                 _context.Add(link);
@@ -147,6 +151,15 @@ namespace LinkShortener.Controllers
         private bool LinkExists(int id)
         {
             return _context.Link.Any(e => e.Id == id);
+        }
+
+        public IActionResult ShortLinkRedirect(string shortLink)
+        {
+            Link link = _context.Link.FirstOrDefault(l => l.ShortLink == shortLink);
+            link.FolowingCount += 1;
+            _context.Update(link);
+            _context.SaveChanges();
+            return Redirect(link.OriginalLink);
         }
     }
 }

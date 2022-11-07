@@ -14,12 +14,14 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="OriginalLink" class="control-label"></label>
-                <input asp-for="OriginalLink" class="form-control" />
+                <input asp-for="OriginalLink" class="form-control"/>
                 <span asp-validation-for="OriginalLink" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            @*<div class="form-group">
                 <label asp-for="ShortLink" class="control-label"></label>
-                <input asp-for="ShortLink" class="form-control" />
+                <br />
+                <lable>@Html.DisplayFor(model => model.ShortLink)</lable>
+                <input type="submit" value="GenerateShortLink" class="btn btn-primary"  />
                 <span asp-validation-for="ShortLink" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -31,7 +33,7 @@
                 <label asp-for="FolowingCount" class="control-label"></label>
                 <input asp-for="FolowingCount" class="form-control" />
                 <span asp-validation-for="FolowingCount" class="text-danger"></span>
-            </div>
+            </div>*@
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>

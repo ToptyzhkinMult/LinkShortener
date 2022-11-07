@@ -35,8 +35,7 @@
                 <a href=@item.OriginalLink>@item.OriginalLink</a>
             </td>
             <td>
-                <!--@Html.DisplayFor(modelItem => item.ShortLink)-->
-                <a href=@item.ShortLink>@item.ShortLink</a>
+                <a asp-action="ShortLinkRedirect" asp-route-shortLink="@item.ShortLink">@item.ShortLink</a>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.CreateDate)
