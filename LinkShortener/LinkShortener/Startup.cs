@@ -54,7 +54,7 @@ namespace LinkShortener
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Link}/{action=Index}/{id?}");
             });
         }
     }
