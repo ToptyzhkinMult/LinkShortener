@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LinkShortener.Models;
 
 namespace LinkShortener.Models
 {
@@ -12,5 +13,6 @@ namespace LinkShortener.Models
         {
 
         }
+        public DbSet<LinkShortener.Models.Link> Link { get; set; }
     }
 }
