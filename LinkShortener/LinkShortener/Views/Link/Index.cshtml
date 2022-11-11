@@ -52,3 +52,11 @@
 }
     </tbody>
 </table>
+
+<script>
+    function refreshPeriodic() {
+        location.reload();
+        timerID = setTimeout("refreshPeriodic()", 3000);
+    }
+    timerID = setTimeout("refreshPeriodic()", 3000);
+</script>
