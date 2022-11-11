@@ -165,8 +165,8 @@ namespace LinkShortener.Controllers
             return Redirect(link.OriginalLink);
         }
 
-        [Route("Go/{foo}")]
-        public IActionResult RedirectShortLink([FromRoute] string foo)
+        [Route("Go/{inputLink}")]
+        public IActionResult RedirectShortLink([FromRoute] string inputLink)
         {
             var request = HttpContext.Request;
             var host = request.Host.Value;
@@ -175,9 +175,11 @@ namespace LinkShortener.Controllers
 
             string shortLink = sheme + "://" + host + path;
             //ShortLinkRedirect(sheme + "://" + host + path);
-
-
+            
             Link link = _context.Link.FirstOrDefault(l => l.ShortLink == shortLink);
+
+            if (link == null) return View("Invalid", shortLink);
+
             link.FolowingCount += 1;
             _context.Update(link);
             _context.SaveChanges();
