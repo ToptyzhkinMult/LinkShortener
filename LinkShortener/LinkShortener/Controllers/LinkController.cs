@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LinkShortener.Models;
 using LinkShortener.Helper;
+using System.Net;
 
 namespace LinkShortener.Controllers
 {
@@ -56,6 +57,11 @@ namespace LinkShortener.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,OriginalLink,ShortLink,CreateDate,FolowingCount")] Link link)
         {
+            if (!UrlIsValid(link.OriginalLink))
+            {
+                return View("Invalid", link.OriginalLink);
+            }
+
             var request = HttpContext.Request;
             var host = request.Host.Value;
             var sheme = request.Scheme;
@@ -69,6 +75,52 @@ namespace LinkShortener.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(link);
+        }
+
+        public bool UrlIsValid(string url)
+        {
+            try
+            {
+                HttpWebRequest request = HttpWebRequest.Create(url) as HttpWebRequest;
+                request.Timeout = 5000; //set the timeout to 5 seconds to keep the user from waiting too long for the page to load
+                request.Method = "HEAD"; //Get only the header information -- no need to download any content
+
+                using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
+                {
+                    int statusCode = (int)response.StatusCode;
+                    if (statusCode >= 100 && statusCode < 400) //Good requests
+                    {
+                        return true;
+                    }
+                    else if (statusCode >= 500 && statusCode <= 510) //Server Errors
+                    {
+                        //log.Warn(String.Format("The remote server has thrown an internal error. Url is not valid: {0}", url));
+
+                        //Debug.WriteLine(String.Format("The remote server has thrown an internal error. Url is not valid: {0}", url));
+                        Console.WriteLine(String.Format("The remote server has thrown an internal error. Url is not valid: {0}", url));
+                        return false;
+                    }
+                }
+            }
+            catch (WebException ex)
+            {
+                if (ex.Status == WebExceptionStatus.ProtocolError) //400 errors
+                {
+                    return false;
+                }
+                else
+                {
+                    //log.Warn(String.Format("Unhandled status [{0}] returned for url: {1}", ex.Status, url), ex);
+                    Console.WriteLine(String.Format("Unhandled status [{0}] returned for url: {1}", ex.Status, url), ex);
+                }
+            }
+            catch (Exception ex)
+            {
+                //log.Error(String.Format("Could not test url {0}.", url), ex);
+                Console.WriteLine(String.Format("Could not test url {0}.", url), ex);
+
+            }
+            return false;
         }
 
         // GET: Link/Edit/5
