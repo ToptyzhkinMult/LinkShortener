@@ -8,9 +8,9 @@ namespace LinkShortener.Helper
 {
     public class ShortLinkGenerator
     {
-        private readonly MSSQLContext _context;
+        private readonly Models.AppContext _context;
 
-        public ShortLinkGenerator(MSSQLContext context)
+        public ShortLinkGenerator(Models.AppContext context)
         {
             _context = context;
         }

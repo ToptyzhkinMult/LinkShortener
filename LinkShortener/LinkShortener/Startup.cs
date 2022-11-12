@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,8 +26,22 @@ namespace LinkShortener
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            string connectionString = Configuration.GetConnectionString("ShortLinkDb");
-            services.AddDbContext<MSSQLContext>(options => options.UseSqlServer(connectionString));
+            bool isMariaDb = Boolean.Parse(Configuration.GetRequiredSection("IsMariaDb").Value);
+            string connectionString;
+
+            if (isMariaDb)
+            {
+                connectionString = Configuration.GetConnectionString("MariaDbConnectionString");
+                services.AddDbContext<Models.AppContext>(options => options.UseMySql(
+                connectionString,
+                new MariaDbServerVersion(new Version(10, 3, 28))));
+            }
+            else
+            {
+                connectionString = Configuration.GetConnectionString("ShortLinkDb");
+                services.AddDbContext<Models.AppContext>(options => options.UseSqlServer(connectionString));
+            }
+
             services.AddControllersWithViews();
         }
 

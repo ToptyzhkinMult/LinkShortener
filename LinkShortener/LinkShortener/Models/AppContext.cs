@@ -7,9 +7,9 @@ using LinkShortener.Models;
 
 namespace LinkShortener.Models
 {
-    public class MSSQLContext : DbContext
+    public class AppContext : DbContext
     {
-        public MSSQLContext(DbContextOptions<MSSQLContext> options) : base(options)
+        public AppContext(DbContextOptions<AppContext> options) : base(options)
         {
 
         }

@@ -13,9 +13,9 @@ namespace LinkShortener.Controllers
 {
     public class LinkController : Controller
     {
-        private readonly MSSQLContext _context;
+        private readonly Models.AppContext _context;
 
-        public LinkController(MSSQLContext context)
+        public LinkController(Models.AppContext context)
         {
             _context = context;
         }
